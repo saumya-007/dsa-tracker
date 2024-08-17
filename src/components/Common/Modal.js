@@ -1,7 +1,6 @@
 import React from 'react'
 
 export default function Modal({open, onClose, children}) {
-  console.log({open, onClose, children})
   return (
     <div onClick={onClose} className={`
         fixed inset-0 flex justify-center items-center

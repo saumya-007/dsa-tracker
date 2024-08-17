@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import {
   ExtendedTableColumns,
   LinksForTableColmns,
@@ -6,15 +6,21 @@ import {
 
 import { Button, Modal } from "../Common";
 import Solution from "./Solution";
+import StickyTextDisplay from "../Common/StickyTextDisplay";
 
 export default function Questions({ solvedQuestion = {} }) {
+  // For Questions Component
   const [solutionModelStatus, setSolutionModelStatus] = useState(false);
-  const [solutionDetails, setSolutionDetails] = useState({
-    tc:"",
-    sc:"",
-    solution:"",
-    question:""
-  });
+
+  const defaultSolutionDetails = {
+    tc: "",
+    sc: "",
+    solution: "",
+    question: "",
+  };
+  const [solutionDetails, setSolutionDetails] = useState(
+    defaultSolutionDetails
+  );
 
   const TableColumnsObject = useMemo(() => {
     return {
@@ -53,26 +59,61 @@ export default function Questions({ solvedQuestion = {} }) {
         tc: solvedQuestion["brute_force_solution_tc"],
         sc: solvedQuestion["brute_force_solution_sc"],
         solution: solvedQuestion["brute_force_solution"],
-        question: solvedQuestion["question_description"]
-      })
+        question: solvedQuestion["question_description"],
+      });
     } else {
       setSolutionDetails({
         tc: solvedQuestion["optimal_solution_tc"],
         sc: solvedQuestion["optimal_solution_sc"],
         solution: solvedQuestion["optimal_solution"],
-        question: solvedQuestion["question_description"]
-      })
+        question: solvedQuestion["question_description"],
+      });
     }
+  };
+
+  // For StickyText
+  const defaultMouseCoordinates = {
+    xCoordinate: "",
+    yCoordinate: "",
+  };
+  const [mouseCoordinates, setMouseCoordinates] = useState(
+    defaultMouseCoordinates
+  );
+  const [currentSelection, setCurrentSelection] = useState("");
+
+  const handleRowDisplayMouseMove = (e, displayText) => {
+    setMouseCoordinates({
+      xCoordinate: e.clientX,
+      yCoordinate: e.clientY,
+    });
+
+    console.log(e.target)
+
+    setCurrentSelection(displayText)
+  };
+
+  const handleRowDisplayMouseOut = () => {
+    setMouseCoordinates(defaultMouseCoordinates);
+    setCurrentSelection()
   };
 
   return (
     <>
+      {/* MODEL COMPONENT TO DISPLAY SOLVED QUESTIONS */}
       <Modal
         open={solutionModelStatus}
         onClose={() => setSolutionModelStatus(false)}
       >
-        <Solution {...solutionDetails}/>
+        <Solution {...solutionDetails} />
       </Modal>
+
+      {/* STICKY TEXT DISPLAY COMPONENT */}
+      <StickyTextDisplay
+        displayCoordinates={mouseCoordinates}
+        displayText={currentSelection}
+      />
+
+      {/* START OF LISTING ELEMENTS */}
       <div className="flex flex-row">
         {Object.keys(TableColumnsObject).map((key) => {
           return (
@@ -82,6 +123,8 @@ export default function Questions({ solvedQuestion = {} }) {
                 ExtendedTableColumns.includes(key) ? "w-64" : "w-28"
               }`}
             >
+              {/* DISPLAYING BUTTON FOR LINKS AND POPUPS AND FOR ALL OTHER ELEMENTS WE DISPLAY SIMPLE TEXT */}
+
               {LinksForTableColmns.includes(key) ? (
                 <Button
                   displayText={makeLinkBtnDisplayName(key)}
@@ -98,8 +141,10 @@ export default function Questions({ solvedQuestion = {} }) {
                   className={makeRowDisplayTextCssClass(
                     TableColumnsObject[key]
                   )}
+                  onMouseMove={(e) => handleRowDisplayMouseMove(e, TableColumnsObject[key])}
+                  onMouseLeave={handleRowDisplayMouseOut}
                 >
-                  {TableColumnsObject[key]}
+                  {TableColumnsObject[key].length > 30 ? TableColumnsObject[key].slice(0,30) + '... ' : TableColumnsObject[key]}
                 </p>
               )}
             </div>

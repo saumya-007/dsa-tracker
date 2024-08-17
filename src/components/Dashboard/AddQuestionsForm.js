@@ -1,11 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { AddQuestionFormInputs } from "../../utils/constants";
 
 import { Button, InputForm } from "../Common";
 import GoEditor from "./GoEditor";
 
-export default function AddQuestionsForm() {
-  const [value, setValue] = useState({
+export default function AddQuestionsForm({addQuestionModelStatus, setAddQuestionModelStatus, getSolvedQuestions}) {
+  const defaultEmptyValues = {
     category: "",
     level: "",
     question_desc: "",
@@ -18,7 +18,8 @@ export default function AddQuestionsForm() {
     opt_solution: "",
     opt_sc: "",
     opt_tc: "",
-  });
+  }
+  const [value, setValue] = useState(defaultEmptyValues);
 
   const onInputChange = (e) => {
     setValue({ ...value, [e.target.name]: e.target.value });
@@ -47,11 +48,24 @@ export default function AddQuestionsForm() {
       }),
     })
       .then((res) => res.json())
-      .then((res) => console.log(res));
+      .then((res) => {
+        console.log(res)
+        setValue(defaultEmptyValues)
+        setAddQuestionModelStatus(false)
+        getSolvedQuestions()
+      })
+      .catch((e) => {
+        console.log(e)
+      });   
   };
 
+  useEffect(() => {
+    !addQuestionModelStatus && setValue(defaultEmptyValues)
+  }, [addQuestionModelStatus])
+
   return (
-    <div className="text-center grid grid-cols-2 gap-3 bg-inherit text-white">
+    <div className="text-center grid grid-cols-2 gap-9 bg-inherit text-white">
+      {/* LEFT SIDE */}
       <div className="grid grid-cols-2 gap-2">
         {AddQuestionFormInputs.map((input, index) =>
           index < AddQuestionFormInputs.length - 2 ? (
@@ -69,7 +83,7 @@ export default function AddQuestionsForm() {
               />
             </div>
           ) : (
-            <></>
+            null
           )
         )}
         <div className="w-20">
@@ -81,7 +95,7 @@ export default function AddQuestionsForm() {
           />
         </div>
       </div>
-
+      {/* RIGHT SIDE */}
       <div>
         {AddQuestionFormInputs.map((input, index) =>
           index >= AddQuestionFormInputs.length - 2 ? (
@@ -91,10 +105,11 @@ export default function AddQuestionsForm() {
                 value={value[input.name]}
                 name={input["name"]}
                 onChange={onCodeEditorChange}
+                width="35vw"
               />
             </span>
           ) : (
-            <></>
+            null
           )
         )}
       </div>

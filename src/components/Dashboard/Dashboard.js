@@ -9,10 +9,14 @@ export default function Dashboard() {
   const [solvedQuestions, setSolvedQuestions] = useState([]);
   const [addQuestionModelStatus, setAddQuestionModelStatus] = useState(false);
 
-  useEffect(() => {
+  const getSolvedQuestions = () => {
     fetch("http://localhost:7081/solved-questions")
       .then((res) => res.json())
       .then((res) => res ? setSolvedQuestions(res) : null);
+  }
+
+  useEffect(() => {
+    getSolvedQuestions()
   }, []);
 
   return (
@@ -22,7 +26,7 @@ export default function Dashboard() {
         open={addQuestionModelStatus}
         onClose={() => setAddQuestionModelStatus(false)}
       >
-        <AddQuestionsForm />
+        <AddQuestionsForm addQuestionModelStatus={addQuestionModelStatus} setAddQuestionModelStatus={setAddQuestionModelStatus} getSolvedQuestions={getSolvedQuestions}/>
       </Modal>
       <div className="m-5">
         <div className="bg-white dark:bg-slate-800 rounded-lg ring-1 ring-slate-900/5 shadow-xl h-[calc(100vh-11rem)] overflow-y-auto">

@@ -5,7 +5,7 @@ import "ace-builds/src-noconflict/mode-golang";
 import "ace-builds/src-noconflict/theme-tomorrow_night";
 import "ace-builds/src-noconflict/ext-language_tools";
 
-const GoEditor = ({ value = "", name, onChange }) => {
+const GoEditor = ({ value = "", name, onChange, width = "40vw", height = "40vh" }) => {
   const [code, setCode] = useState(value)
   const [uniqueName, setUniqueName] = useState(name)
 
@@ -16,8 +16,6 @@ const GoEditor = ({ value = "", name, onChange }) => {
   useEffect(() => {
     setUniqueName(name)
   }, [name])
-
-  console.log(name, value)
 
   return (
     <AceEditor
@@ -35,8 +33,8 @@ const GoEditor = ({ value = "", name, onChange }) => {
         tabSize: 4,
       }}
       style={{
-        width: "40vw",
-        height: "40vh",
+        width,
+        height,
       }}
       fontSize={16} // Increased font size
       showPrintMargin={false}
