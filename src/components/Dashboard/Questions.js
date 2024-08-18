@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useMemo, useState } from "react";
 import {
   ExtendedTableColumns,
   LinksForTableColmns,
@@ -79,6 +79,8 @@ export default function Questions({ solvedQuestion = {} }) {
   const [mouseCoordinates, setMouseCoordinates] = useState(
     defaultMouseCoordinates
   );
+
+  const [isShown, setIsShown] = useState(false);
   const [currentSelection, setCurrentSelection] = useState("");
 
   const handleRowDisplayMouseMove = (e, displayText) => {
@@ -87,14 +89,7 @@ export default function Questions({ solvedQuestion = {} }) {
       yCoordinate: e.clientY,
     });
 
-    console.log(e.target)
-
-    setCurrentSelection(displayText)
-  };
-
-  const handleRowDisplayMouseOut = () => {
-    setMouseCoordinates(defaultMouseCoordinates);
-    setCurrentSelection()
+    setCurrentSelection(displayText);
   };
 
   return (
@@ -109,6 +104,7 @@ export default function Questions({ solvedQuestion = {} }) {
 
       {/* STICKY TEXT DISPLAY COMPONENT */}
       <StickyTextDisplay
+        isShown={isShown}
         displayCoordinates={mouseCoordinates}
         displayText={currentSelection}
       />
@@ -137,15 +133,24 @@ export default function Questions({ solvedQuestion = {} }) {
                   }
                 />
               ) : (
-                <p
-                  className={makeRowDisplayTextCssClass(
-                    TableColumnsObject[key]
-                  )}
-                  onMouseMove={(e) => handleRowDisplayMouseMove(e, TableColumnsObject[key])}
-                  onMouseLeave={handleRowDisplayMouseOut}
+                <div
+                  onMouseMove={(e) =>
+                    handleRowDisplayMouseMove(e, TableColumnsObject[key])
+                  }
+                  // onMouseLeave={handleRowDisplayMouseOut}
+                  onMouseEnter={() => setIsShown(true)}
+                  onMouseLeave={() => setIsShown(false)}
                 >
-                  {TableColumnsObject[key].length > 30 ? TableColumnsObject[key].slice(0,30) + '... ' : TableColumnsObject[key]}
-                </p>
+                  <p
+                    className={makeRowDisplayTextCssClass(
+                      TableColumnsObject[key]
+                    )}
+                  >
+                    {TableColumnsObject[key].length > 30
+                      ? TableColumnsObject[key].slice(0, 30) + "... "
+                      : TableColumnsObject[key]}
+                  </p>
+                </div>
               )}
             </div>
           );

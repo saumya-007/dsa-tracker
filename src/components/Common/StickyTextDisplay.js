@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export default function StickyTextDisplay({ displayCoordinates, displayText }) {
+export default function StickyTextDisplay({ displayCoordinates, displayText, isShown }) {
   const defaultStickyTextMetaData = {
     isVisible: false,
     textContent: "",
@@ -16,16 +16,21 @@ export default function StickyTextDisplay({ displayCoordinates, displayText }) {
       setStickyTextMetaData((prevState) => {
         return {
           ...prevState,
-          isVisible: true,
-          textContent: displayText,
+          textContent: displayText || defaultStickyTextMetaData.textContent,
           yCoordinate: displayCoordinates.yCoordinate,
           xCoordinate: displayCoordinates.xCoordinate,
         };
       });
-    } else {
-      setStickyTextMetaData(defaultStickyTextMetaData);
     }
   }, [displayCoordinates]);
+
+  useEffect(() => {
+    setStickyTextMetaData((prevState) => {
+      return { ...prevState, isVisible: isShown };
+    });
+  }, [isShown]);
+
+  console.log(isShown)
 
   return (
     <div
@@ -35,17 +40,16 @@ export default function StickyTextDisplay({ displayCoordinates, displayText }) {
       style={
         stickyTextMetaData.isVisible
           ? {
-
-            // TRUNS OUT THE CSS COULD HAVE SOLVED THE ISSUE I THINK. THE fixed param was causing the box to hide again but if we change it to absolute it will take care od the position
-            position: 'absolute',
-            left: `${stickyTextMetaData.xCoordinate}px`,
-            top: `${stickyTextMetaData.yCoordinate}px`,
-            maxWidth: '600px',
-            whiteSpace: 'normal',
-            wordWrap: 'break-word',
-            overflowWrap: 'break-word',
-            height: 'auto',
-          }
+              // TRUNS OUT THE CSS COULD HAVE SOLVED THE ISSUE I THINK. THE fixed param was causing the box to hide again but if we change it to absolute it will take care od the position
+              position: "absolute",
+              left: `${stickyTextMetaData.xCoordinate}px`,
+              top: `${stickyTextMetaData.yCoordinate}px`,
+              maxWidth: "600px",
+              whiteSpace: "normal",
+              wordWrap: "break-word",
+              overflowWrap: "break-word",
+              height: "auto",
+            }
           : { display: "none" }
       }
     >
