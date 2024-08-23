@@ -35,6 +35,8 @@ const GoEditor = ({ value = "", name, onChange, width = "40vw", height = "40vh" 
       style={{
         width,
         height,
+        border: '2px solid gray',
+        borderRadius: '15px'
       }}
       fontSize={16} // Increased font size
       showPrintMargin={false}
