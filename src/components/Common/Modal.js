@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Modal({open, onClose, children}) {
+export default function Modal({open, onClose, children, style}) {
   return (
     <div onClick={onClose} className={`
         fixed inset-0 flex justify-center items-center
@@ -10,7 +10,9 @@ export default function Modal({open, onClose, children}) {
         <div onClick={(e) => e.stopPropagation()} className={`
             dark:bg-slate-800 rounded-xl shadow p-6 transition-all w-4/5
             ${open ? "scale-100 opacity-100" : "scale-125 opacity-0"}
-        `}>
+        `}
+        style={style}
+        >
             {children}
         </div>
     </div>

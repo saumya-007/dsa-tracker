@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export default function Button({ link, buttonType = 'primary', displayText, onClickAction }) {
+export default function Button({ link, buttonType = 'primary', displayText, onClickAction, style={} }) {
   const cssClass = setButtonCss(buttonType)
 
   return (
@@ -8,6 +8,7 @@ export default function Button({ link, buttonType = 'primary', displayText, onCl
       onClick={() => onClickAction()}
       key={link}
       className={cssClass}
+      style={style}
     >
       {displayText || "Click Me"}
     </div>
@@ -23,6 +24,8 @@ function setButtonCss(buttonType) {
     cssClass = "bg-teal-500 hover:bg-teal-600 text-white py-1 px-4 rounded-lg text-center"
   } else if (buttonType === 'tertiary') {
     cssClass = "bg-fuchsia-800 hover:bg-fuchsia-500 border-2 border-fuchsia-300 text-white py-1 px-4 rounded-lg text-center"
+  } else if (buttonType === 'transparant') {
+    cssClass = "text-white py-1 px-4 rounded-lg text-center"
   } 
 
   return cssClass

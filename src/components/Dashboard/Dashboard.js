@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { TableColumns, ExtendedTableColumns } from "../../utils/constants";
 
 import Questions from "./Questions";
-import AddQuestionsForm from "./AddQuestionsForm";
+import QuestionsForm from "./QuestionsForm";
+
 import { Button, Modal } from "../Common";
 
 export default function Dashboard() {
@@ -12,11 +13,11 @@ export default function Dashboard() {
   const getSolvedQuestions = () => {
     fetch("http://localhost:7081/solved-questions")
       .then((res) => res.json())
-      .then((res) => res ? setSolvedQuestions(res) : null);
-  }
+      .then((res) => (res ? setSolvedQuestions(res) : null));
+  };
 
   useEffect(() => {
-    getSolvedQuestions()
+    getSolvedQuestions();
   }, []);
 
   return (
@@ -26,8 +27,14 @@ export default function Dashboard() {
         open={addQuestionModelStatus}
         onClose={() => setAddQuestionModelStatus(false)}
       >
-        <AddQuestionsForm addQuestionModelStatus={addQuestionModelStatus} setAddQuestionModelStatus={setAddQuestionModelStatus} getSolvedQuestions={getSolvedQuestions}/>
+        <QuestionsForm
+          questionModelStatus={addQuestionModelStatus}
+          setQuestionModelStatus={setAddQuestionModelStatus}
+          fallbackFunction={getSolvedQuestions}
+          buttonText="ADD"
+        />
       </Modal>
+      {/* DASHBOARD MAIN */}
       <div className="m-5">
         <div className="bg-white dark:bg-slate-800 rounded-lg ring-1 ring-slate-900/5 shadow-xl h-[calc(100vh-11rem)] overflow-y-auto">
           {/* ADD BTN */}
@@ -38,26 +45,19 @@ export default function Dashboard() {
               onClickAction={() => setAddQuestionModelStatus(true)}
             />
           </div>
-          {/* HEADING */}
+
+          {/* LIST HEADING */}
           <div className="flex flex-row">
-            {TableColumns.map((colName, i) => {
-              return ExtendedTableColumns.includes(colName) ? (
-                <div
-                  key={i}
-                  className="dark:text-white text-base font-medium m-4 flex-none w-64"
-                >
-                  {colName}
-                </div>
-              ) : (
-                <div
-                  key={i}
-                  className="dark:text-white text-base font-medium m-4 flex-none w-28"
-                >
-                  {colName}
-                </div>
-              );
-            })}
+            {TableColumns.map((colName, i) => (
+              <div
+                key={i}
+                className="dark:text-white text-base font-medium m-4 flex-none w-36"
+              >
+                {colName}
+              </div>
+            ))}
           </div>
+
           {/* QUESTION LIST */}
           {solvedQuestions.map((solvedQuestion) => (
             <Questions

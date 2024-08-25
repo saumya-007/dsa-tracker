@@ -1,5 +1,4 @@
 const TableColumns = [
-  "Category",
   "Level",
   "Question",
   "Link",
@@ -9,6 +8,7 @@ const TableColumns = [
   "Opt Approach",
   "Opt Solution",
   "Complexity",
+  null,
 ];
 
 const ExtendedTableColumns = ["Question", "BF Approach", "Opt Approach"];

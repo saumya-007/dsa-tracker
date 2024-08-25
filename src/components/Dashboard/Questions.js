@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from "react";
 import {
-  ExtendedTableColumns,
   LinksForTableColmns,
 } from "../../utils/constants";
 
 import { Button, Modal } from "../Common";
 import Solution from "./Solution";
+import EditDeleteOptions from "./EditDeleteOptions";
 import StickyTextDisplay from "../Common/StickyTextDisplay";
 
 export default function Questions({ solvedQuestion = {} }) {
@@ -24,10 +24,9 @@ export default function Questions({ solvedQuestion = {} }) {
 
   const TableColumnsObject = useMemo(() => {
     return {
-      Category: solvedQuestion["problem_category"],
-      Level: solvedQuestion["problem_level"],
-      Question: solvedQuestion["question_description"],
-      Link: solvedQuestion["question_link"],
+      "Level": solvedQuestion["problem_level"],
+      "Question": solvedQuestion["question_description"],
+      "Link": solvedQuestion["question_link"],
       "BF Approach": solvedQuestion["brute_force_solution_description"],
       "BF Solution": solvedQuestion["brute_force_solution"],
       "BF Complexity": makeComplexityText(
@@ -40,13 +39,9 @@ export default function Questions({ solvedQuestion = {} }) {
         solvedQuestion["optimal_solution_tc"],
         solvedQuestion["optimal_solution_sc"]
       ),
+      "Edit Delete Option": "update",
     };
   }, [solvedQuestion]);
-
-  const rowCommonCss = useMemo(
-    () => "dark:text-slate-500 text-base m-4 break-words flex-none",
-    []
-  );
 
   const openLeetCodeLink = (link) => {
     window.open(link, "_blank");
@@ -115,9 +110,7 @@ export default function Questions({ solvedQuestion = {} }) {
           return (
             <div
               key={key}
-              className={`${rowCommonCss} ${
-                ExtendedTableColumns.includes(key) ? "w-64" : "w-28"
-              }`}
+              className='dark:text-slate-500 text-base m-4 break-words flex-none w-36'
             >
               {/* DISPLAYING BUTTON FOR LINKS AND POPUPS AND FOR ALL OTHER ELEMENTS WE DISPLAY SIMPLE TEXT */}
 
@@ -132,6 +125,8 @@ export default function Questions({ solvedQuestion = {} }) {
                       : () => openPopUp(key)
                   }
                 />
+              ) : key === "Edit Delete Option" ? (
+                <EditDeleteOptions questionId={solvedQuestion._id}/>
               ) : (
                 <div
                   onMouseMove={(e) =>
@@ -146,8 +141,8 @@ export default function Questions({ solvedQuestion = {} }) {
                       TableColumnsObject[key]
                     )}
                   >
-                    {TableColumnsObject[key].length > 30
-                      ? TableColumnsObject[key].slice(0, 30) + "... "
+                    {TableColumnsObject[key].length > 36
+                      ? TableColumnsObject[key].slice(0, 36) + "... "
                       : TableColumnsObject[key]}
                   </p>
                 </div>

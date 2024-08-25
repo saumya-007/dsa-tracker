@@ -30,8 +30,6 @@ export default function StickyTextDisplay({ displayCoordinates, displayText, isS
     });
   }, [isShown]);
 
-  console.log(isShown)
-
   return (
     <div
       className={`fixed bg-inherit text-white p-4 border-2 border-gray-600 shadow-md h-auto ${
